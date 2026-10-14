@@ -35,20 +35,11 @@ jobs:
         run: |
           cd android
           ./gradlew --no-daemon assembleRelease -Dorg.gradle.jvmargs='-Xmx4g'
-      - name: Update CHANGELOG
-        id: changelog
-        uses: requarks/changelog-action@v1
+
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
         with:
-          token: ${{ github.token }}
-          tag: ${{ github.ref_name }}
-          writeToFile: false
-      - name: Create release
-        uses: ncipollo/release-action@v1
-        id: create_release
-        with:
-          generateReleaseNotes: true
-          artifacts: "./android/app/build/outputs/apk/release/*.apk"
-          makeLatest: true
-          name: ${{ github.ref_name }}
-          body: ${{ steps.changelog.outputs.changes }}
-          tag: ${{ github.ref_name }}
+          files: |
+            ./android/app/build/outputs/apk/release/*.apk
+          draft: true
